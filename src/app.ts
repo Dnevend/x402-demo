@@ -9,9 +9,11 @@ app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
 
+const PAY_TO = (process.env.WALLET_ADDRESS || "0x0000000000000000000000000000000000000000") as `0x${string}`;
+
 app.use(
-  paymentMiddleware("0xaaa", {
-    "/api/weather": {
+  paymentMiddleware(PAY_TO, {
+    "/api/hello": {
       price: "$0.001", // 每次调用价格（单位美元）
       network: "base", // Base 网络
       config: {
@@ -37,6 +39,14 @@ app.use(
 
 app.get("/", (_req: Request, res: Response) => {
   res.json({ ok: true, message: "Hello Express + pnpm (TS)!" });
+});
+
+app.get("/api/hello", (req, res) => {
+  const name = req.query.name || "Guest";
+  res.json({
+    message: `Hello, ${name}! 👋 Welcome to x402 Bazaar.`,
+    time: new Date().toISOString(),
+  });
 });
 
 export default app;
